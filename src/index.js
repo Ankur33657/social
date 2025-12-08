@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import pool from "./config/db.js";
 import userRoute from "./routes/userRoute.js";
 import errorHandling from "./middleware/errorHandling.js";
@@ -9,6 +10,7 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use(errorHandling);
 const port = process.env.PORT || 5001;
 app.use("/api", userRoute);
