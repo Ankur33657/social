@@ -4,7 +4,7 @@ const getAllUsers = async () => {
   return result.rows;
 };
 
-const loginUser = async (userId, password) => {
+const loginUser = async (userId) => {
   const result = await pool.query('SELECT * FROM "users" WHERE "userId" = $1', [
     userId,
   ]);
@@ -36,14 +36,34 @@ const getUser = async (userId) => {
   return null;
 };
 
+const existAccount = async (toaccountId) => {
+  const account = await pool.query('SELECT *FROM users WHERE "accountId"=$1', [
+    toaccountId,
+  ]);
+  if (account.rows.length > 0) {
+    return true;
+  }
+  return false;
+};
+
 const updateUserProfile = async (userId, payload) => {
   const updatedUser = await pool.query(
     `UPDATE users
      SET "fullName" = COALESCE($1, "fullName"),
-         "password"  = COALESCE($2, "password")
-     WHERE "userId" = $3
+         "password"  = COALESCE($2, "password"),
+         "personal_details"=COALESCE($3, "personal_details"),
+         "education"=COALESCE($4, "education"),
+         "family_details"=COALESCE($5, "family_details")
+     WHERE "userId" = $6
      RETURNING *`,
-    [payload.fullName, payload.password, userId],
+    [
+      payload.fullName,
+      payload.password,
+      payload.personal_details,
+      payload.education,
+      payload.family_details,
+      userId,
+    ],
   );
   if (updatedUser.rows.length > 0) {
     return updatedUser.rows[0];
@@ -56,6 +76,7 @@ const UserModelService = {
   signUpUser,
   getUser,
   updateUserProfile,
+  existAccount,
 };
 
 export default UserModelService;

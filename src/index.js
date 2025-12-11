@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import pool from "./config/db.js";
 import userRoute from "./routes/userRoute.js";
+import connectionRoute from "./routes/connection.js";
 import errorHandling from "./middleware/errorHandling.js";
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(cookieParser());
 app.use(errorHandling);
 const port = process.env.PORT || 5001;
 app.use("/api", userRoute);
+app.use("/connection", connectionRoute);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

@@ -17,4 +17,5 @@ router.patch(
   AuthHandler.UserAuth,
   UserController.updateUserProfile,
 );
+
 export default router;

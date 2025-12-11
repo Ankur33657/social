@@ -18,7 +18,7 @@ const loginUser = async (req, res, next) => {
     if (!userId || !password) {
       return responseHandler(res, 400, "Invalid credentials", null);
     }
-    const user = await UserModelService?.loginUser(userId, password);
+    const user = await UserModelService?.loginUser(userId);
     if (user) {
       const hashPassword = await bcrypt.compare(password, user.password);
       if (!hashPassword) {
@@ -26,6 +26,7 @@ const loginUser = async (req, res, next) => {
       }
       const token = jwt.sign({ userId: userId }, process.env.JWT_SECRET);
       res.cookie("token", token, { httpOnly: true });
+      delete user.password;
       return responseHandler(res, 200, "User logged in successfully", {
         user,
         token,
@@ -57,6 +58,7 @@ const signUpUser = async (req, res, next) => {
       hashPassword,
     );
     if (user) {
+      delete user.password;
       return responseHandler(res, 201, "User Created successfully", user);
     }
     return responseHandler(res, 400, "something wents wrong", null);
@@ -68,6 +70,7 @@ const signUpUser = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   try {
     const user = req.user;
+    delete user.password;
     return responseHandler(res, 200, "user fetch successfully", user);
   } catch (error) {
     next(error);
@@ -90,6 +93,7 @@ const updateUserProfile = async (req, res, next) => {
       payload,
     );
     if (user) {
+      delete user.password;
       return responseHandler(res, 200, "Profile Update successfully", user);
     }
     return responseHandler(res, 500, "internal server error", null);
