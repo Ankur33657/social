@@ -15,7 +15,7 @@ connectionRouter.post(
   connectionController.createConnection,
 );
 connectionRouter.post(
-  "actionconnection",
+  "/actionconnection",
   AuthHandler?.UserAuth,
   connectionController.actionConnection,
 );
